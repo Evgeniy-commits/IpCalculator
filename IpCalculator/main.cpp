@@ -103,28 +103,30 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 				case IDC_EDIT_PREFIX:
 				{
-					if (HIWORD(wParam) == EN_CHANGE)
-					{
-						//hIPmask = GetDlgItem(hwnd, IDC_IP_MASK);
-						//CHAR szIPPrefix[4] = {};
-						//dwIPPrefix = 0;
-						//dwIPmask = 0;
+					//if (HIWORD(wParam) == EN_CHANGE)
+					//{
+					//	
+					//	hIPmask = GetDlgItem(hwnd, IDC_IP_MASK);
+					//	CHAR szIPPrefix[4] = {};
+					//	dwIPPrefix = 0;
+					//	dwIPmask = 0;
 
-						//GetDlgItemText(hwnd, IDC_EDIT_PREFIX, szIPPrefix, 4);
+					//	GetDlgItemText(hwnd, IDC_EDIT_PREFIX, szIPPrefix, 4);
 
-						//dwIPPrefix = (DWORD)atoi(szIPPrefix);
-						//
-						//dwIPmask = (0xFFFFFFFFU << (32 - dwIPPrefix)) & 0xFFFFFFFFU;
-						//SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPmask);
+					//	dwIPPrefix = (DWORD)atoi(szIPPrefix);
+					//	
+					//	dwIPmask = (0xFFFFFFFFU << (32 - dwIPPrefix)) & 0xFFFFFFFFU;
+					//	SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPmask);
 
-						//sprintf(szIPPrefix, "%i", dwIPPrefix);
-						//SetDlgItemText(hwnd, IDC_EDIT_PREFIX, szIPPrefix);
+					//	sprintf(szIPPrefix, "%i", dwIPPrefix);
+					//	SetDlgItemText(hwnd, IDC_EDIT_PREFIX, szIPPrefix);
 
-						//std::cout << "Prefix: " << dwIPPrefix << std::endl;
-						//std::cout << "Mask: " << dwIPmask << std::endl;
-						////hIPmask = GetDlgItem(hwnd, IDC_IP_MASK);
-		
-					}
+					//	std::cout << "Prefix: " << dwIPPrefix << std::endl;
+					//	std::cout << "Mask: " << dwIPmask << std::endl;
+					//	//hIPmask = GetDlgItem(hwnd, IDC_IP_MASK);
+					//	break;
+					//}
+
 				}
 					break;
 			}
