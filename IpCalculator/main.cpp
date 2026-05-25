@@ -36,10 +36,10 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 			break;
 
-		/*case WM_NOTIFY:
+		case WM_NOTIFY:
 		{
 			NMHDR* pNMHDR = (NMHDR*) lParam;
-			if (pNMHDR->idFrom == IDC_IP_MASK && pNMHDR->code == IPN_FIELDCHANGED)
+			if (wParam == IDC_IP_MASK || wParam == IDC_IP_ADDRESS)
 			{
 				SendMessage(hIPmask, IPM_GETADDRESS , 0, (LPARAM)&dwIPmask);
 				for (dwIPPrefix = 0; dwIPmask; dwIPPrefix++) dwIPmask <<= 1;
@@ -49,8 +49,8 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
 			}
 		}
-			break;*/
-		case WM_NOTIFY:
+			break;
+		/*case WM_NOTIFY:
 		{
 			NMHDR* pNMHDR = (NMHDR*)lParam;
 			if (pNMHDR->idFrom == IDC_SPIN_PREFIX && pNMHDR->code == UDN_DELTAPOS)
@@ -75,10 +75,10 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
 
 				return TRUE;
-			}
+			}*/
 
-		}
-		break;
+		//}
+		//break;
 
 		case WM_COMMAND:
 		{
@@ -90,9 +90,9 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					{
 						SendMessage(hIPaddress, IPM_GETADDRESS, 0, (LPARAM)&dwIPaddress);
 						//std::cout << FIRST_IPADDRESS(dwIPaddress) << std::endl;
-						if (FIRST_IPADDRESS(dwIPaddress) < 128) dwIPmask = 0xFF000000;		// dwIPPrefix = 8;
-						else if (FIRST_IPADDRESS(dwIPaddress) < 192) dwIPmask = 0xFFFF0000; // dwIPPrefix = 16;
-						else if (FIRST_IPADDRESS(dwIPaddress) < 224) dwIPmask = 0xFFFFFF00; // dwIPPrefix = 24;
+						if (FIRST_IPADDRESS(dwIPaddress) < 128) dwIPmask = 0xFF000000, dwIPPrefix = 8;		// dwIPPrefix = 8;
+						else if (FIRST_IPADDRESS(dwIPaddress) < 192) dwIPmask = 0xFFFF0000, dwIPPrefix = 16; // dwIPPrefix = 16;
+						else if (FIRST_IPADDRESS(dwIPaddress) < 224) dwIPmask = 0xFFFFFF00, dwIPPrefix = 24; // dwIPPrefix = 24;
 						SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPmask);
 						sprintf(szIPPrefix, "%i", dwIPPrefix);
 						SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
@@ -102,17 +102,17 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 				case IDC_IP_MASK:
 				{
-					if (HIWORD(wParam) == EN_CHANGE)
-					{
-						SendMessage(hIPmask, IPM_GETADDRESS, 0, (LPARAM)&dwIPmask);
-						dwIPmask &= 0xFFFFFFFC;
-						for (dwIPPrefix = 0; dwIPmask; dwIPPrefix++) dwIPmask <<= 1;
-						CHAR szIPPrefix[3] = {};
-						sprintf(szIPPrefix, "%i", dwIPPrefix);
-						std::cout << szIPPrefix << std::endl;
-						SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
-					//if (HIWORD(wParam) == EN_KILLFOCUS) SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPaddress);
-					}
+					//if (HIWORD(wParam) == EN_CHANGE)
+					//{
+					//	SendMessage(hIPmask, IPM_GETADDRESS, 0, (LPARAM)&dwIPmask);
+					//	dwIPmask &= 0xFFFFFFFC;
+					//	for (dwIPPrefix = 0; dwIPmask; dwIPPrefix++) dwIPmask <<= 1;
+					//	CHAR szIPPrefix[3] = {};
+					//	sprintf(szIPPrefix, "%i", dwIPPrefix);
+					//	std::cout << szIPPrefix << std::endl;
+					//	SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
+					////if (HIWORD(wParam) == EN_KILLFOCUS) SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPaddress);
+					//}
 				}
 					break;
 
@@ -120,20 +120,20 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					if (HIWORD(wParam) == EN_CHANGE)
 					{
-							////hIPmask = GetDlgItem(hwnd, IDC_IP_MASK);
-							//CHAR szIPPrefix[4] = {};
-							//SendMessage(hIPPrefix, WM_GETTEXT, 4, (LPARAM)szIPPrefix);
-							//DWORD dwIPPrefix = std::atoi(szIPPrefix);
-							////dwIPmask = UINT_MAX;
-							////for (int i = 0; i < 32 - dwIPPrefix; i++) dwIPmask <<= 1;
+							//hIPmask = GetDlgItem(hwnd, IDC_IP_MASK);
+							CHAR szIPPrefix[4] = {};
+							SendMessage(hIPPrefix, WM_GETTEXT, 4, (LPARAM)szIPPrefix);
+							DWORD dwIPPrefix = std::atoi(szIPPrefix);
+							dwIPmask = UINT_MAX;
+							for (int i = 0; i < 32 - dwIPPrefix; i++) dwIPmask <<= 1;
 							//dwIPmask = (0xFFFFFFFFU << (32 - dwIPPrefix)) & 0xFFFFFFFFU;
-							//
-							//SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPmask);
+							
+							SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPmask);
 
 							//sprintf(szIPPrefix, "%i", dwIPPrefix);
 							//SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
 
-							//
+							
 					}
 				}
 				    break;
