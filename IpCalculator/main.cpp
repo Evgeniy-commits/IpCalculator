@@ -32,7 +32,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			freopen("CONOUT$", "w", stdout);
 			std::cout << "Init" << std::endl;
 			SetFocus(GetDlgItem(hwnd, IDC_IP_ADDRESS));
-			SendMessage(GetDlgItem(hwnd, IDC_SPIN_PREFIX), UDM_SETRANGE, 0, MAKEWORD(32, 0));
+			SendMessage(GetDlgItem(hwnd, IDC_SPIN_PREFIX), UDM_SETRANGE, 0, MAKEWORD(30, 0));
 		}
 			break;
 
@@ -50,6 +50,34 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 			break;*/
+		case WM_NOTIFY:
+		{
+			NMHDR* pNMHDR = (NMHDR*)lParam;
+			if (pNMHDR->idFrom == IDC_SPIN_PREFIX && pNMHDR->code == UDN_DELTAPOS)
+			{
+				LPNMUPDOWN pUD = (LPNMUPDOWN)lParam;
+				GetDlgItemText(hwnd, IDC_EDIT_PREFIX, szIPPrefix, 3);
+				dwIPPrefix = atoi(szIPPrefix);
+				dwIPPrefix += pUD->iDelta;
+
+				if (dwIPPrefix < 0) dwIPPrefix = 0;
+				else if (dwIPPrefix > 30) dwIPPrefix = 30;
+				if (dwIPPrefix == 0) dwIPmask = 0;
+				
+				dwIPmask = (0xFFFFFFFF << (32 - dwIPPrefix)) & 0xFFFFFFFF;
+
+				std::cout << "Prefix: " << dwIPPrefix << std::endl;
+				std::cout << "Mask: " << dwIPmask << std::endl;
+				SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPmask);
+
+				sprintf(szIPPrefix, "%i", dwIPPrefix);
+				std::cout << "New Prefix:" << szIPPrefix << std::endl;
+				SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
+
+				return TRUE;
+			}
+		}
+		break;
 
 		case WM_COMMAND:
 		{
