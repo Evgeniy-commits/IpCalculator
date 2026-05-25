@@ -76,6 +76,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 				return TRUE;
 			}
+
 		}
 		break;
 
@@ -114,7 +115,28 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 				}
 					break;
-				
+
+				case IDC_EDIT_PREFIX:
+				{
+					if (HIWORD(wParam) == EN_CHANGE)
+					{
+							////hIPmask = GetDlgItem(hwnd, IDC_IP_MASK);
+							//CHAR szIPPrefix[4] = {};
+							//SendMessage(hIPPrefix, WM_GETTEXT, 4, (LPARAM)szIPPrefix);
+							//DWORD dwIPPrefix = std::atoi(szIPPrefix);
+							////dwIPmask = UINT_MAX;
+							////for (int i = 0; i < 32 - dwIPPrefix; i++) dwIPmask <<= 1;
+							//dwIPmask = (0xFFFFFFFFU << (32 - dwIPPrefix)) & 0xFFFFFFFFU;
+							//
+							//SendMessage(hIPmask, IPM_SETADDRESS, 0, dwIPmask);
+
+							//sprintf(szIPPrefix, "%i", dwIPPrefix);
+							//SendMessage(hIPPrefix, WM_SETTEXT, 0, (LPARAM)szIPPrefix);
+
+							//
+					}
+				}
+				    break;
 				case IDOK:
 					break;
 
