@@ -7,7 +7,7 @@
 
 BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 VOID PrintInfo(HWND hwnd);
-CHAR* FormatAddress(CHAR szBuffer[], DWORD dwIPaddress);
+LPSTR FormatAddress(CHAR szBuffer[], DWORD dwIPaddress);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, INT nCmdShow)
 {
@@ -152,7 +152,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return FALSE;
 }
 
-CHAR* FormatAddress(CHAR szBuffer[], DWORD dwIPaddress)
+lPSTR FormatAddress(CHAR szBuffer[], DWORD dwIPaddress)
 {
 	sprintf
 	(
@@ -165,7 +165,11 @@ CHAR* FormatAddress(CHAR szBuffer[], DWORD dwIPaddress)
 	);
 	return szBuffer;
 }
-
+LPSTR FormatCount(CHAR szBuffer[], DWORD dwCount)
+{
+	sprintf(szBuffer, "%i", dwCount);
+	return szBuffer;
+}
 VOID PrintInfo(HWND hwnd)
 {
 	HWND hIPaddress = GetDlgItem(hwnd, IDC_IP_ADDRESS);
@@ -175,16 +179,22 @@ VOID PrintInfo(HWND hwnd)
 	DWORD dwIPmask = 0;
 	SendMessage(hIPaddress, IPM_GETADDRESS, 0, (LPARAM)&dwIPaddress);
 	SendMessage(hIPmask, IPM_GETADDRESS, 0, (LPARAM)&dwIPmask);
+	DWORD dwNetworkAddress = dwIPaddress & dwIPmask;
+	DWORD dwBroadcastAddress = dwIPaddress | ~dwIPmask;
+
 	CHAR szInfo[1024] = {};
-	CHAR szBuffer[1024] = {};
+	CHAR szNetworkAddress[1024] = {};
+	CHAR szBroadcastAddress[1024] = {};
+	CHAR szIPCount[1024] = {};
+	CHAR szHostCount[1024] = {};
 
 	sprintf
 	(
 		szInfo,
 		"Адрес сети: %s;\nШироковещательный адрес: %s;\nКоличество IP-адресов: %s;\nКоличество узлов: %s;\n",
-		FormatAddress(szBuffer, dwIPaddress & dwIPmask),
-		FormatAddress(szBuffer, dwIPaddress | ~dwIPmask),
-		"",
+		FormatAddress(szNetworkAddress, dwNetworkAddress),
+		FormatAddress(szBroadcastAddress, dwBroadcastAddress),
+		FormatCount(szIPCount, ),
 		""
 	);
 	SendMessage(hStaticInfo, WM_SETTEXT, 0, (LPARAM)szInfo);
