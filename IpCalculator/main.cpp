@@ -151,7 +151,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return FALSE;
 }
 
-LPSTR FormatAddress(CHAR szBuffer[], CONST CHAR szMessage[], DWORD dwIPaddress)
+LPSTR FormatAddress(CHAR szBuffer[], CONST CHAR* szMessage, DWORD dwIPaddress)
 {
 	sprintf
 	(
@@ -165,7 +165,31 @@ LPSTR FormatAddress(CHAR szBuffer[], CONST CHAR szMessage[], DWORD dwIPaddress)
 	);
 	return szBuffer;
 }
-LPSTR FormatCount(CHAR szBuffer[], CONST CHAR szMessage[], DWORD dwCount)
+
+CHAR* OTB(BYTE octet, CHAR* buffer)
+{
+	for (int i = 7; i >= 0; i--) 
+	{
+		*buffer++ = (octet & (1 << i)) ? '1' : '0';
+	}
+	*buffer = '\0'; 
+	return buffer - 8; 
+}
+
+LPSTR FormatAddressToBinary(CHAR szBuffer[], CONST CHAR* szMessage, DWORD dwIPaddress) 
+{
+	CHAR octf[9], octs[9], octth[9], octfo[9];
+
+	OTB(FIRST_IPADDRESS(dwIPaddress), octf);
+	OTB(SECOND_IPADDRESS(dwIPaddress), octs);
+	OTB(THIRD_IPADDRESS(dwIPaddress), octth);
+	OTB(FOURTH_IPADDRESS(dwIPaddress), octfo);
+
+	sprintf(szBuffer, "%s%s.%s.%s.%s", szMessage, octf, octs, octth, octfo);
+	return szBuffer;
+}
+
+LPSTR FormatCount(CHAR szBuffer[], CONST CHAR* szMessage, DWORD dwCount)
 {
 	sprintf(szBuffer, "%s%i", szMessage, dwCount);
 	return szBuffer;
@@ -184,16 +208,20 @@ VOID PrintInfo(HWND hwnd)
 
 	CHAR szInfo[1024] = {};
 	CHAR szNetworkAddress[1024] = {};
+	CHAR szNetworkAddressBin[1024] = {};
 	CHAR szBroadcastAddress[1024] = {};
+	CHAR szBroadcastAddressBin[1024] = {};
 	CHAR szIPCount[1024] = {};
 	CHAR szHostCount[1024] = {};
 
 	sprintf
 	(
 		szInfo,
-		"%s;\n%s;\n%s;\n%s;\n",
+		"%s;\n%s;\n%s;\n%s;\n%s;\n%s;\n",
 		FormatAddress(szNetworkAddress, "Адрес сети: \t\t\t", dwNetworkAddress),
+		FormatAddressToBinary(szNetworkAddressBin, "", dwNetworkAddress),
 		FormatAddress(szBroadcastAddress, "Широковещательный адрес: \t", dwBroadcastAddress),
+		FormatAddressToBinary(szBroadcastAddressBin, "", dwBroadcastAddress),
 		FormatCount(szIPCount, "Количество IP-адресов: \t\t", dwBroadcastAddress - dwNetworkAddress + 1),
 		FormatCount(szHostCount, "Количество узлов: \t\t", dwBroadcastAddress - dwNetworkAddress - 1)
 	);
